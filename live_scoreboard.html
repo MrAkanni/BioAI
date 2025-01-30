@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Scoreboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Scoreboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Activity 1</th>
+                <th>Activity 2</th>
+                <th>Activity 3</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="scoreboard">
+            <tr>
+                <td>Team A</td>
+                <td id="teamA-activity1">0</td>
+                <td id="teamA-activity2">0</td>
+                <td id="teamA-activity3">0</td>
+                <td id="teamA-total">0</td>
+            </tr>
+            <tr>
+                <td>Team B</td>
+                <td id="teamB-activity1">0</td>
+                <td id="teamB-activity2">0</td>
+                <td id="teamB-activity3">0</td>
+                <td id="teamB-total">0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Update Scores</h2>
+    <button onclick="updateScore('teamA', 'activity1', 10)">Team A: +10 (Activity 1)</button>
+    <button onclick="updateScore('teamB', 'activity2', 7)">Team B: +7 (Activity 2)</button>
+
+    <script>
+        function updateScore(team, activity, points) {
+            const cell = document.getElementById(`${team}-${activity}`);
+            const currentScore = parseInt(cell.innerText);
+            const newScore = currentScore + points;
+            cell.innerText = newScore;
+
+            // Update total
+            const totalCell = document.getElementById(`${team}-total`);
+            const total = ['activity1', 'activity2', 'activity3'].reduce((sum, act) => {
+                return sum + parseInt(document.getElementById(`${team}-${act}`).innerText);
+            }, 0);
+            totalCell.innerText = total;
+        }
+    </script>
+</body>
+</html>
