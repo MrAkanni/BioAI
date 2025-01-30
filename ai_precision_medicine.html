@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI in Precision Medicine - The Personalized Medicine Challenge</title>
+    <title>AI Drug Discovery Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,64 +11,87 @@
             margin: 50px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
         }
         .btn {
             display: inline-block;
             margin: 20px;
             padding: 15px 25px;
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
             text-decoration: none;
             font-size: 18px;
             border-radius: 5px;
         }
+        input, select {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 80%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>AI in Precision Medicine - The Personalized Medicine Challenge</h1>
-        <p>Welcome to the **AI Doctor Simulation!** Your mission is to **diagnose and personalize treatments for patients** using AI tools.</p>
+        <h1>AI Drug Discovery Challenge</h1>
+        <p>Use AI tools to discover the best drug for a bacterial infection.</p>
 
-        <h2>🔬 Try It Yourself!</h2>
-        <p>Click the button below to open the Ensembl Genome Browser and analyze patient genetic data.</p>
+        <h2>🧪 Drug Selection Challenge</h2>
+        <p>A patient is suffering from a **bacterial infection**. Your task is to analyze available drugs and choose the most effective one.</p>
 
-        <a class="btn" href="https://www.ensembl.org/" target="_blank">🔗 Explore Ensembl</a>
+        <h3>Step 1: Select a Drug</h3>
+        <select id="drug-select">
+            <option value="">-- Select a Drug --</option>
+            <option value="drug1">Drug A - Molecular Weight: 150g/mol, Toxicity: Low</option>
+            <option value="drug2">Drug B - Molecular Weight: 400g/mol, Toxicity: High</option>
+            <option value="drug3">Drug C - Molecular Weight: 250g/mol, Toxicity: Medium</option>
+        </select>
+        <button onclick="analyzeDrug()">Analyze</button>
+        <p id="drug-feedback"></p>
 
-        <h2>💡 Activity Instructions</h2>
-        <p><strong>Mission:</strong> Your team is a group of top doctors specializing in AI-driven precision medicine. Your goal is to diagnose **a patient’s genetic condition** and **recommend a treatment plan.**</p>
-        <ol>
-            <li>Click the "Explore Ensembl" button above.</li>
-            <li>Search for one of the following **disease-related genes**:</li>
-            <ul>
-                <li><strong>BRCA1</strong> (Linked to Breast Cancer)</li>
-                <li><strong>CFTR</strong> (Linked to Cystic Fibrosis)</li>
-                <li><strong>HBB</strong> (Linked to Sickle Cell Anemia)</li>
-            </ul>
-            <li>Analyze the gene’s **mutations and associated diseases**.</li>
-            <li>Propose a **personalized treatment plan** based on AI-driven insights.</li>
-        </ol>
+        <h3>🔍 Check Drug AI Analysis</h3>
+        <p>Use AI tools to verify your drug choice:</p>
+        <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" class="btn">Search Drug on PubChem</a>
 
-        <h2>🏆 Scoring & Challenge</h2>
-        <p>Teams will be **scored based on accuracy, speed, and creativity**:</p>
-        <ul>
-            <li>Fastest and correct diagnosis: **10 points**</li>
-            <li>Most detailed treatment plan: **7 points**</li>
-            <li>Innovative AI-based approach: **5 points**</li>
-            <li>Hint required: **-2 points**</li>
-        </ul>
-        
-        <h2>🧠 Questions to Answer</h2>
-        <p>Use the information from Ensembl to answer these questions:</p>
-        <ul>
-            <li>What role does this gene play in the body?</li>
-            <li>What diseases are linked to mutations in this gene?</li>
-            <li>How could AI assist doctors in treating patients with mutations in this gene?</li>
-            <li>How does **personalized medicine** improve treatment success?</li>
-        </ul>
+        <h2>🏆 Live Scoreboard</h2>
+        <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
+                width="100%" height="450" style="border:none;"></iframe>
     </div>
+
+    <script>
+        function analyzeDrug() {
+            const drug = document.getElementById("drug-select").value;
+            let feedback = "";
+
+            switch (drug) {
+                case "drug1":
+                    feedback = "✅ Drug A is effective with low toxicity. Recommended for use.";
+                    break;
+                case "drug2":
+                    feedback = "⚠️ Drug B has high toxicity. Not recommended!";
+                    break;
+                case "drug3":
+                    feedback = "✅ Drug C is moderately effective with manageable toxicity. Consider this option.";
+                    break;
+                default:
+                    feedback = "❌ Please select a drug to analyze.";
+            }
+
+            document.getElementById("drug-feedback").innerHTML = feedback;
+        }
+    </script>
 </body>
 </html>
-<iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
-        width="100%" height="450" style="border:none;"></iframe>
