@@ -50,7 +50,14 @@
         <p>Use AI-driven insights to recommend a personalized treatment plan based on a patient's genetic mutation.</p>
 
         <h2>🧬 Personalized Treatment Challenge</h2>
-        <p>A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.</p>
+        <p>Select a genetic mutation to analyze:</p>
+        <select id="mutation-select" onchange="changeMutation()">
+            <option value="brca1">BRCA1 - Linked to Breast Cancer</option>
+            <option value="cftr">CFTR - Linked to Cystic Fibrosis</option>
+            <option value="httexp">HTT Expansion - Linked to Huntington's Disease</option>
+        </select>
+        
+        <p id="mutation-description">A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.</p>
 
         <h3>Step 1: Select a Treatment Plan</h3>
         <select id="treatment-select">
@@ -68,8 +75,8 @@
         <p id="ai-feedback"></p>
 
         <h3>🔍 AI-Powered Genetic Analysis</h3>
-        <p>Use AI tools to verify the best treatment plan for the BRCA1 mutation:</p>
-        <a href="https://www.ncbi.nlm.nih.gov/gene/672" target="_blank" class="btn">Analyze BRCA1 on NCBI</a>
+        <p>Use AI tools to verify the best treatment plan:</p>
+        <a href="https://www.ncbi.nlm.nih.gov/gene/" target="_blank" class="btn">Analyze Genes on NCBI</a>
 
         <h2>🏆 Live Scoreboard</h2>
         <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
@@ -77,6 +84,17 @@
     </div>
 
     <script>
+        const mutationData = {
+            brca1: "A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.",
+            cftr: "A patient has a mutation in the **CFTR** gene, linked to Cystic Fibrosis. Identify the best treatment option.",
+            httexp: "A patient has an HTT gene expansion, indicating **Huntington's Disease**. Choose an optimal treatment strategy."
+        };
+
+        function changeMutation() {
+            const selectedMutation = document.getElementById("mutation-select").value;
+            document.getElementById("mutation-description").innerHTML = mutationData[selectedMutation];
+        }
+
         function analyzeTreatment() {
             const treatment = document.getElementById("treatment-select").value;
             let feedback = "";
