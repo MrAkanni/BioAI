@@ -47,20 +47,25 @@
 <body>
     <div class="container">
         <h1>AI Drug Discovery Challenge</h1>
-        <p>Use AI tools to discover the best drug for a bacterial infection.</p>
+        <p>Use AI-driven drug analysis to find the most effective treatment for a bacterial infection.</p>
 
         <h2>🧪 Drug Selection Challenge</h2>
-        <p>A patient is suffering from a **bacterial infection**. Your task is to analyze available drugs and choose the most effective one.</p>
+        <p>A patient is suffering from a **bacterial infection**. Analyze drug effectiveness using AI recommendations.</p>
 
         <h3>Step 1: Select a Drug</h3>
         <select id="drug-select">
             <option value="">-- Select a Drug --</option>
-            <option value="drug1">Drug A - Molecular Weight: 150g/mol, Toxicity: Low</option>
-            <option value="drug2">Drug B - Molecular Weight: 400g/mol, Toxicity: High</option>
-            <option value="drug3">Drug C - Molecular Weight: 250g/mol, Toxicity: Medium</option>
+            <option value="drug1">Drug A - High Affinity, Low Side Effects</option>
+            <option value="drug2">Drug B - Strong but High Toxicity</option>
+            <option value="drug3">Drug C - Moderate Efficiency, Safe</option>
         </select>
         <button onclick="analyzeDrug()">Analyze</button>
         <p id="drug-feedback"></p>
+
+        <h3>Step 2: AI-Powered Prediction</h3>
+        <p>Analyze how the drug interacts with bacterial proteins. Use AI simulation to predict efficiency.</p>
+        <button onclick="aiPrediction()">Run AI Drug Simulation</button>
+        <p id="ai-feedback"></p>
 
         <h3>🔍 Check Drug AI Analysis</h3>
         <p>Use AI tools to verify your drug choice:</p>
@@ -78,19 +83,40 @@
 
             switch (drug) {
                 case "drug1":
-                    feedback = "✅ Drug A is effective with low toxicity. Recommended for use.";
+                    feedback = "✅ Drug A is effective with minimal side effects. Recommended for treatment.";
                     break;
                 case "drug2":
-                    feedback = "⚠️ Drug B has high toxicity. Not recommended!";
+                    feedback = "⚠️ Drug B is strong but highly toxic. Consider alternatives.";
                     break;
                 case "drug3":
-                    feedback = "✅ Drug C is moderately effective with manageable toxicity. Consider this option.";
+                    feedback = "✅ Drug C is moderately effective and safe. A balanced option.";
                     break;
                 default:
                     feedback = "❌ Please select a drug to analyze.";
             }
 
             document.getElementById("drug-feedback").innerHTML = feedback;
+        }
+
+        function aiPrediction() {
+            const drug = document.getElementById("drug-select").value;
+            let feedback = "";
+
+            switch (drug) {
+                case "drug1":
+                    feedback = "🧪 AI Prediction: Drug A binds strongly to bacterial proteins, making it a top choice!";
+                    break;
+                case "drug2":
+                    feedback = "🧪 AI Prediction: Drug B shows strong binding but is likely to cause severe side effects.";
+                    break;
+                case "drug3":
+                    feedback = "🧪 AI Prediction: Drug C provides moderate binding with minimal side effects. A safe alternative.";
+                    break;
+                default:
+                    feedback = "❌ Please select a drug before running AI analysis.";
+            }
+
+            document.getElementById("ai-feedback").innerHTML = feedback;
         }
     </script>
 </body>
