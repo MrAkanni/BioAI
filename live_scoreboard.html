@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Scoreboard (Time-Based with Auto-Validation)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 70%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Scoreboard (Time-Based with Auto-Validation)</h1>
+    <p>Teams earn points based on how quickly they submit correct answers.</p>
+
+    <table id="scoreboard">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Activity 1</th>
+                <th>Activity 2</th>
+                <th>Activity 3</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Teams will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <h2>Add a Team</h2>
+    <input type="text" id="newTeamName" placeholder="Enter team name">
+    <button onclick="addTeam()">Add Team</button>
+
+    <h2>Submit Answers (Time-Based Scoring)</h2>
+    <select id="teamSelect">
+        <option value="">Select a team</option>
+    </select>
+    <select id="activitySelect">
+        <option value="activity1">Activity 1</option>
+        <option value="activity2">Activity 2</option>
+        <option value="activity3">Activity 3</option>
+    </select>
+    <input type="text" id="answerInput" placeholder="Enter answer">
+    <button onclick="submitAnswer()">Submit Answer</button>
+
+    <script>
+        const scoreboard = document.getElementById("scoreboard").querySelector("tbody");
+        const teamSelect = document.getElementById("teamSelect");
+        const startTime = new Date().getTime(); // Start time when the page loads
+
+        // Predefined correct answers
+        const correctAnswers = {
+            activity1: "DNA",
+            activity2: "Protein Synthesis",
+            activity3: "Photosynthesis"
+        };
+
+        function addTeam() {
+            const teamName = document.getElementById("newTeamName").value;
+            if (teamName === "") {
+                alert("Please enter a team name.");
+                return;
+            }
+
+            // Add team to scoreboard table
+            const row = document.createElement("tr");
+            row.id = `team-${teamName}`;
+            row.innerHTML = `
+                <td>${teamName}</td>
+                <td id="${teamName}-activity1">0</td>
+                <td id="${teamName}-activity2">0</td>
+                <td id="${teamName}-activity3">0</td>
+                <td id="${teamName}-total">0</td>
+            `;
+            scoreboard.appendChild(row);
+
+            // Add team to dropdown
+            const option = document.createElement("option");
+            option.value = teamName;
+            option.textContent = teamName;
+            teamSelect.appendChild(option);
+
+            // Clear input
+            document.getElementById("newTeamName").value = "";
+        }
+
+        function submitAnswer() {
+            const teamName = teamSelect.value;
+            const activity = document.getElementById("activitySelect").value;
+            const answer = document.getElementById("answerInput").value.trim();
+            const timeTaken = (new Date().getTime() - startTime) / 1000; // Time taken in seconds
+
+            if (teamName === "" || answer === "") {
+                alert("Please select a team and enter an answer.");
+                return;
+            }
+
+            // Check if answer is correct
+            if (answer.toLowerCase() === correctAnswers[activity].toLowerCase()) {
+                let points = 0;
+                if (timeTaken <= 30) points = 10;
+                else if (timeTaken <= 60) points = 7;
+                else if (timeTaken <= 90) points = 5;
+                else points = 3;
+
+                // Award points automatically
+                awardPoints(teamName, activity, points);
+                alert(`Correct! ${teamName} earned ${points} points.`);
+            } else {
+                alert("Incorrect answer. No points awarded.");
+            }
+
+            // Clear input
+            document.getElementById("answerInput").value = "";
+        }
+
+        function awardPoints(teamName, activity, points) {
+            const activityCell = document.getElementById(`${teamName}-${activity}`);
+            activityCell.textContent = parseInt(activityCell.textContent) + points;
+
+            // Update total score
+            const totalCell = document.getElementById(`${teamName}-total`);
+            const total = ["activity1", "activity2", "activity3"].reduce((sum, act) => {
+                return sum + parseInt(document.getElementById(`${teamName}-${act}`).textContent);
+            }, 0);
+            totalCell.textContent = total;
+        }
+    </script>
+</body>
+</html>
