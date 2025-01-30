@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Drug Discovery - Find the Cure Before Time Runs Out!</title>
+    <title>AI Drug Discovery Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,60 +11,87 @@
             margin: 50px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
         }
         .btn {
             display: inline-block;
             margin: 20px;
             padding: 15px 25px;
-            background-color: #dc3545;
+            background-color: #007bff;
             color: white;
             text-decoration: none;
             font-size: 18px;
             border-radius: 5px;
         }
+        input, select {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 80%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>AI Drug Discovery - Find the Cure Before Time Runs Out!</h1>
-        <p>Welcome to the **Drug Discovery Escape Room!** Your mission is to **find the right drug to stop a deadly infection** before it spreads!</p>
+        <h1>AI Drug Discovery Challenge</h1>
+        <p>Use AI tools to discover the best drug for a bacterial infection.</p>
 
-        <h2>🔬 Try It Yourself!</h2>
-        <p>Click the button below to open the PubChem tool and search for the right drug.</p>
+        <h2>🧪 Drug Selection Challenge</h2>
+        <p>A patient is suffering from a **bacterial infection**. Your task is to analyze available drugs and choose the most effective one.</p>
 
-        <a class="btn" href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank">🔗 Explore PubChem</a>
+        <h3>Step 1: Select a Drug</h3>
+        <select id="drug-select">
+            <option value="">-- Select a Drug --</option>
+            <option value="drug1">Drug A - Molecular Weight: 150g/mol, Toxicity: Low</option>
+            <option value="drug2">Drug B - Molecular Weight: 400g/mol, Toxicity: High</option>
+            <option value="drug3">Drug C - Molecular Weight: 250g/mol, Toxicity: Medium</option>
+        </select>
+        <button onclick="analyzeDrug()">Analyze</button>
+        <p id="drug-feedback"></p>
 
-        <h2>💡 Activity Instructions</h2>
-        <p><strong>Mission:</strong> Your team is racing against time to **discover the correct drug** for a deadly bacterial infection.</p>
-        <ol>
-            <li>Click the "Explore PubChem" button above.</li>
-            <li>Search for drugs that can treat **bacterial infections**.</li>
-            <li>Compare the properties of different antibiotics.</li>
-            <li>Identify the **most effective drug** based on its molecular properties and mechanism of action.</li>
-            <li>Submit your findings before time runs out!</li>
-        </ol>
+        <h3>🔍 Check Drug AI Analysis</h3>
+        <p>Use AI tools to verify your drug choice:</p>
+        <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" class="btn">Search Drug on PubChem</a>
 
-        <h2>🏆 Scoring & Challenge</h2>
-        <p>Teams will earn **points based on speed and accuracy**:</p>
-        <ul>
-            <li>First correct answer: **10 points**</li>
-            <li>Second correct answer: **7 points**</li>
-            <li>Third correct answer: **5 points**</li>
-            <li>Hint required: **-2 points**</li>
-        </ul>
-        
-        <h2>🧠 Questions to Answer</h2>
-        <p>Use the information from PubChem to answer these questions:</p>
-        <ul>
-            <li>What drug did you find to be the most effective?</li>
-            <li>How does this drug work against bacteria?</li>
-            <li>What are possible side effects of this drug?</li>
-            <li>Why is AI important in drug discovery?</li>
-        </ul>
+        <h2>🏆 Live Scoreboard</h2>
+        <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
+                width="100%" height="450" style="border:none;"></iframe>
     </div>
+
+    <script>
+        function analyzeDrug() {
+            const drug = document.getElementById("drug-select").value;
+            let feedback = "";
+
+            switch (drug) {
+                case "drug1":
+                    feedback = "✅ Drug A is effective with low toxicity. Recommended for use.";
+                    break;
+                case "drug2":
+                    feedback = "⚠️ Drug B has high toxicity. Not recommended!";
+                    break;
+                case "drug3":
+                    feedback = "✅ Drug C is moderately effective with manageable toxicity. Consider this option.";
+                    break;
+                default:
+                    feedback = "❌ Please select a drug to analyze.";
+            }
+
+            document.getElementById("drug-feedback").innerHTML = feedback;
+        }
+    </script>
 </body>
 </html>
-<iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
-        width="100%" height="450" style="border:none;"></iframe>
