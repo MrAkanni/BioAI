@@ -59,70 +59,25 @@
         
         <p><strong>DNA Sequence:</strong> <span id="dna-sequence">ATGCGATTACGTTT</span></p>
 
-        <h3>Step 1: Transcribe DNA to mRNA</h3>
-        <input type="text" id="mrna-input" placeholder="Enter mRNA sequence">
-        <button onclick="checkMRNA()">Submit</button>
-        <p id="mrna-feedback"></p>
-
-        <h3>Step 2: Translate mRNA to Protein</h3>
-        <input type="text" id="protein-input" placeholder="Enter protein sequence">
-        <button onclick="checkProtein()">Submit</button>
-        <p id="protein-feedback"></p>
-
-        <h3>Step 3: Identify the Disease</h3>
-        <input type="text" id="disease-input" placeholder="Enter disease name">
-        <button onclick="checkDisease()">Submit</button>
-        <p id="disease-feedback"></p>
-
         <h3>🔍 Check Sequence with AI</h3>
         <p>Use AI to analyze your sequence by clicking the button below:</p>
         <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank" class="btn">Check DNA with BLAST</a>
 
         <h2>🏆 Live Scoreboard</h2>
-        <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
+        <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard_individual.html" 
                 width="100%" height="450" style="border:none;"></iframe>
     </div>
 
     <script>
         const virusData = {
-            virus1: { dna: "ATGCGATTACGTTT", mrna: "UACGCUAAUGCAA", protein: "Tyrosine-Alanine-Asparagine-Alanine", disease: "Cystic Fibrosis" },
-            virus2: { dna: "CGTATCGATCGTACG", mrna: "GCAUAGCUAGCAUGC", protein: "Alanine-Tyrosine-Leucine-Alanine", disease: "Sickle Cell Anemia" },
-            virus3: { dna: "TTAGCCGATCGTAGC", mrna: "AAUCGGCUAGCAUCG", protein: "Asparagine-Arginine-Leucine-Histidine", disease: "Huntington's Disease" }
+            virus1: "ATGCGATTACGTTT",
+            virus2: "CGTATCGATCGTACG",
+            virus3: "TTAGCCGATCGTAGC"
         };
 
         function changeVirus() {
             const selectedVirus = document.getElementById("virus-select").value;
-            document.getElementById("dna-sequence").textContent = virusData[selectedVirus].dna;
-        }
-
-        function checkMRNA() {
-            const selectedVirus = document.getElementById("virus-select").value;
-            const input = document.getElementById("mrna-input").value.toUpperCase();
-            if (input === virusData[selectedVirus].mrna) {
-                document.getElementById("mrna-feedback").innerHTML = "✅ Correct! Now translate to protein.";
-            } else {
-                document.getElementById("mrna-feedback").innerHTML = "❌ Try again! Remember A -> U, T -> A, C -> G, G -> C.";
-            }
-        }
-
-        function checkProtein() {
-            const selectedVirus = document.getElementById("virus-select").value;
-            const input = document.getElementById("protein-input").value;
-            if (input === virusData[selectedVirus].protein) {
-                document.getElementById("protein-feedback").innerHTML = "✅ Well done! Now identify the disease.";
-            } else {
-                document.getElementById("protein-feedback").innerHTML = "❌ Incorrect! Use a codon table to help.";
-            }
-        }
-
-        function checkDisease() {
-            const selectedVirus = document.getElementById("virus-select").value;
-            const input = document.getElementById("disease-input").value;
-            if (input.toLowerCase() === virusData[selectedVirus].disease.toLowerCase()) {
-                document.getElementById("disease-feedback").innerHTML = "🎉 Correct! You have successfully diagnosed the disease!";
-            } else {
-                document.getElementById("disease-feedback").innerHTML = "❌ Incorrect! Research genetic diseases for clues.";
-            }
+            document.getElementById("dna-sequence").textContent = virusData[selectedVirus];
         }
     </script>
 </body>
