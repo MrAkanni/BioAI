@@ -48,9 +48,9 @@
         <thead>
             <tr>
                 <th>Team</th>
-                <th>Activity 1</th>
-                <th>Activity 2</th>
-                <th>Activity 3</th>
+                <th>AI Disease Detection</th>
+                <th>AI Precision Medicine</th>
+                <th>AI Drug Discovery</th>
                 <th>Total</th>
             </tr>
         </thead>
@@ -68,9 +68,9 @@
         <option value="">Select a team</option>
     </select>
     <select id="activitySelect">
-        <option value="activity1">Activity 1</option>
-        <option value="activity2">Activity 2</option>
-        <option value="activity3">Activity 3</option>
+        <option value="ai_disease_detection">AI Disease Detection</option>
+        <option value="ai_precision_medicine">AI Precision Medicine</option>
+        <option value="ai_drug_discovery">AI Drug Discovery</option>
     </select>
     <input type="text" id="answerInput" placeholder="Enter answer">
     <button onclick="submitAnswer()">Submit Answer</button>
@@ -82,9 +82,9 @@
 
         // Predefined correct answers
         const correctAnswers = {
-            activity1: "DNA",
-            activity2: "Protein Synthesis",
-            activity3: "Photosynthesis"
+            ai_disease_detection: "DNA",
+            ai_precision_medicine: "Protein Synthesis",
+            ai_drug_discovery: "Photosynthesis"
         };
 
         function addTeam() {
@@ -99,9 +99,9 @@
             row.id = `team-${teamName}`;
             row.innerHTML = `
                 <td>${teamName}</td>
-                <td id="${teamName}-activity1">0</td>
-                <td id="${teamName}-activity2">0</td>
-                <td id="${teamName}-activity3">0</td>
+                <td id="${teamName}-ai_disease_detection">0</td>
+                <td id="${teamName}-ai_precision_medicine">0</td>
+                <td id="${teamName}-ai_drug_discovery">0</td>
                 <td id="${teamName}-total">0</td>
             `;
             scoreboard.appendChild(row);
@@ -152,7 +152,7 @@
 
             // Update total score
             const totalCell = document.getElementById(`${teamName}-total`);
-            const total = ["activity1", "activity2", "activity3"].reduce((sum, act) => {
+            const total = ["ai_disease_detection", "ai_precision_medicine", "ai_drug_discovery"].reduce((sum, act) => {
                 return sum + parseInt(document.getElementById(`${teamName}-${act}`).textContent);
             }, 0);
             totalCell.textContent = total;
