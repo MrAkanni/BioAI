@@ -50,7 +50,13 @@
         <p>Welcome to the AI-powered disease detection challenge! Your goal is to identify the disease associated with a given genetic sequence.</p>
 
         <h2>🧬 DNA to Disease Challenge</h2>
-        <p>Below is a mystery DNA sequence. Convert it to mRNA, then to a protein sequence, and match it to a disease.</p>
+        <p>Select a mystery virus to analyze:</p>
+        <select id="virus-select" onchange="changeVirus()">
+            <option value="virus1">Mystery Virus 1</option>
+            <option value="virus2">Mystery Virus 2</option>
+            <option value="virus3">Mystery Virus 3</option>
+        </select>
+        
         <p><strong>DNA Sequence:</strong> <span id="dna-sequence">ATGCGATTACGTTT</span></p>
 
         <h3>Step 1: Transcribe DNA to mRNA</h3>
@@ -74,13 +80,21 @@
     </div>
 
     <script>
-        const correctMRNA = "UACGCUAAUGCAA";
-        const correctProtein = "Tyrosine-Alanine-Asparagine-Alanine";
-        const correctDisease = "Cystic Fibrosis";
+        const virusData = {
+            virus1: { dna: "ATGCGATTACGTTT", mrna: "UACGCUAAUGCAA", protein: "Tyrosine-Alanine-Asparagine-Alanine", disease: "Cystic Fibrosis" },
+            virus2: { dna: "CGTATCGATCGTACG", mrna: "GCAUAGCUAGCAUGC", protein: "Alanine-Tyrosine-Leucine-Alanine", disease: "Sickle Cell Anemia" },
+            virus3: { dna: "TTAGCCGATCGTAGC", mrna: "AAUCGGCUAGCAUCG", protein: "Asparagine-Arginine-Leucine-Histidine", disease: "Huntington's Disease" }
+        };
+
+        function changeVirus() {
+            const selectedVirus = document.getElementById("virus-select").value;
+            document.getElementById("dna-sequence").textContent = virusData[selectedVirus].dna;
+        }
 
         function checkMRNA() {
+            const selectedVirus = document.getElementById("virus-select").value;
             const input = document.getElementById("mrna-input").value.toUpperCase();
-            if (input === correctMRNA) {
+            if (input === virusData[selectedVirus].mrna) {
                 document.getElementById("mrna-feedback").innerHTML = "✅ Correct! Now translate to protein.";
             } else {
                 document.getElementById("mrna-feedback").innerHTML = "❌ Try again! Remember A -> U, T -> A, C -> G, G -> C.";
@@ -88,8 +102,9 @@
         }
 
         function checkProtein() {
+            const selectedVirus = document.getElementById("virus-select").value;
             const input = document.getElementById("protein-input").value;
-            if (input === correctProtein) {
+            if (input === virusData[selectedVirus].protein) {
                 document.getElementById("protein-feedback").innerHTML = "✅ Well done! Now identify the disease.";
             } else {
                 document.getElementById("protein-feedback").innerHTML = "❌ Incorrect! Use a codon table to help.";
@@ -97,8 +112,9 @@
         }
 
         function checkDisease() {
+            const selectedVirus = document.getElementById("virus-select").value;
             const input = document.getElementById("disease-input").value;
-            if (input.toLowerCase() === correctDisease.toLowerCase()) {
+            if (input.toLowerCase() === virusData[selectedVirus].disease.toLowerCase()) {
                 document.getElementById("disease-feedback").innerHTML = "🎉 Correct! You have successfully diagnosed the disease!";
             } else {
                 document.getElementById("disease-feedback").innerHTML = "❌ Incorrect! Research genetic diseases for clues.";
