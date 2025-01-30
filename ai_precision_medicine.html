@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Drug Discovery Challenge</title>
+    <title>AI Precision Medicine Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,25 +46,30 @@
 </head>
 <body>
     <div class="container">
-        <h1>AI Drug Discovery Challenge</h1>
-        <p>Use AI tools to discover the best drug for a bacterial infection.</p>
+        <h1>AI Precision Medicine Challenge</h1>
+        <p>Use AI-driven insights to recommend a personalized treatment plan based on a patient's genetic mutation.</p>
 
-        <h2>🧪 Drug Selection Challenge</h2>
-        <p>A patient is suffering from a **bacterial infection**. Your task is to analyze available drugs and choose the most effective one.</p>
+        <h2>🧬 Personalized Treatment Challenge</h2>
+        <p>A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.</p>
 
-        <h3>Step 1: Select a Drug</h3>
-        <select id="drug-select">
-            <option value="">-- Select a Drug --</option>
-            <option value="drug1">Drug A - Molecular Weight: 150g/mol, Toxicity: Low</option>
-            <option value="drug2">Drug B - Molecular Weight: 400g/mol, Toxicity: High</option>
-            <option value="drug3">Drug C - Molecular Weight: 250g/mol, Toxicity: Medium</option>
+        <h3>Step 1: Select a Treatment Plan</h3>
+        <select id="treatment-select">
+            <option value="">-- Select a Treatment --</option>
+            <option value="plan1">PARP Inhibitor Therapy</option>
+            <option value="plan2">Chemotherapy</option>
+            <option value="plan3">Hormone Therapy</option>
         </select>
-        <button onclick="analyzeDrug()">Analyze</button>
-        <p id="drug-feedback"></p>
+        <button onclick="analyzeTreatment()">Analyze</button>
+        <p id="treatment-feedback"></p>
 
-        <h3>🔍 Check Drug AI Analysis</h3>
-        <p>Use AI tools to verify your drug choice:</p>
-        <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" class="btn">Search Drug on PubChem</a>
+        <h3>Step 2: AI-Powered Prediction</h3>
+        <p>Use AI to simulate how the treatment interacts with the patient's genetic profile.</p>
+        <button onclick="aiPrediction()">Run AI Treatment Simulation</button>
+        <p id="ai-feedback"></p>
+
+        <h3>🔍 AI-Powered Genetic Analysis</h3>
+        <p>Use AI tools to verify the best treatment plan for the BRCA1 mutation:</p>
+        <a href="https://www.ncbi.nlm.nih.gov/gene/672" target="_blank" class="btn">Analyze BRCA1 on NCBI</a>
 
         <h2>🏆 Live Scoreboard</h2>
         <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
@@ -72,25 +77,46 @@
     </div>
 
     <script>
-        function analyzeDrug() {
-            const drug = document.getElementById("drug-select").value;
+        function analyzeTreatment() {
+            const treatment = document.getElementById("treatment-select").value;
             let feedback = "";
 
-            switch (drug) {
-                case "drug1":
-                    feedback = "✅ Drug A is effective with low toxicity. Recommended for use.";
+            switch (treatment) {
+                case "plan1":
+                    feedback = "✅ PARP Inhibitor Therapy is highly effective for BRCA1 mutations.";
                     break;
-                case "drug2":
-                    feedback = "⚠️ Drug B has high toxicity. Not recommended!";
+                case "plan2":
+                    feedback = "⚠️ Chemotherapy is a common approach but may not be the most targeted option.";
                     break;
-                case "drug3":
-                    feedback = "✅ Drug C is moderately effective with manageable toxicity. Consider this option.";
+                case "plan3":
+                    feedback = "✅ Hormone Therapy can be effective but depends on hormone receptor status.";
                     break;
                 default:
-                    feedback = "❌ Please select a drug to analyze.";
+                    feedback = "❌ Please select a treatment plan to analyze.";
             }
 
-            document.getElementById("drug-feedback").innerHTML = feedback;
+            document.getElementById("treatment-feedback").innerHTML = feedback;
+        }
+
+        function aiPrediction() {
+            const treatment = document.getElementById("treatment-select").value;
+            let feedback = "";
+
+            switch (treatment) {
+                case "plan1":
+                    feedback = "🧪 AI Prediction: PARP Inhibitors show high success rates for BRCA1 mutations!";
+                    break;
+                case "plan2":
+                    feedback = "🧪 AI Prediction: Chemotherapy may work, but targeted treatments are recommended.";
+                    break;
+                case "plan3":
+                    feedback = "🧪 AI Prediction: Hormone Therapy depends on specific patient hormone markers.";
+                    break;
+                default:
+                    feedback = "❌ Please select a treatment before running AI analysis.";
+            }
+
+            document.getElementById("ai-feedback").innerHTML = feedback;
         }
     </script>
 </body>
