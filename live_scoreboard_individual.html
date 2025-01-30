@@ -24,7 +24,6 @@
         }
     </style>
     <script>
-        // Placeholder for dynamic data
         const participants = [
             { name: "Participant 1", score: 10 },
             { name: "Participant 2", score: 8 },
@@ -33,24 +32,19 @@
 
         function renderScoreboard() {
             const tbody = document.getElementById("scoreboard-body");
-            tbody.innerHTML = ""; // Clear existing rows
+            tbody.innerHTML = "";
             participants.forEach(participant => {
-                const row = `<tr>
-                    <td>${participant.name}</td>
-                    <td>${participant.score}</td>
-                </tr>`;
+                const row = `<tr><td>${participant.name}</td><td>${participant.score}</td></tr>`;
                 tbody.innerHTML += row;
             });
         }
 
-        // Simulate real-time updates
         setInterval(() => {
-            // Example: Randomly update scores
             participants.forEach(p => {
                 p.score += Math.floor(Math.random() * 3);
             });
             renderScoreboard();
-        }, 5000); // Update every 5 seconds
+        }, 5000);
     </script>
 </head>
 <body onload="renderScoreboard()">
