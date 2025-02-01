@@ -66,3 +66,58 @@
         <p>Analyze how the drug interacts with bacterial proteins. Use AI simulation to predict efficiency.</p>
         <button onclick="aiPrediction()">Run AI Drug Simulation</button>
         <p id="ai-feedback"></p>
+
+        <h3>🔍 Check Drug AI Analysis</h3>
+        <p>Use AI tools to verify your drug choice:</p>
+        <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" class="btn">Search Drug on PubChem</a>
+
+        <h2>🏆 Live Scoreboard</h2>
+        <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
+                width="100%" height="450" style="border:none;"></iframe>
+    </div>
+
+    <script>
+        function analyzeDrug() {
+            const drug = document.getElementById("drug-select").value;
+            let feedback = "";
+
+            switch (drug) {
+                case "drug1":
+                    feedback = "✅ Drug A is effective with minimal side effects. Recommended for treatment.";
+                    break;
+                case "drug2":
+                    feedback = "⚠️ Drug B is strong but highly toxic. Consider alternatives.";
+                    break;
+                case "drug3":
+                    feedback = "✅ Drug C is moderately effective and safe. A balanced option.";
+                    break;
+                default:
+                    feedback = "❌ Please select a drug to analyze.";
+            }
+
+            document.getElementById("drug-feedback").innerHTML = feedback;
+        }
+
+        function aiPrediction() {
+            const drug = document.getElementById("drug-select").value;
+            let feedback = "";
+
+            switch (drug) {
+                case "drug1":
+                    feedback = "🧪 AI Prediction: Drug A binds strongly to bacterial proteins, making it a top choice!";
+                    break;
+                case "drug2":
+                    feedback = "🧪 AI Prediction: Drug B shows strong binding but is likely to cause severe side effects.";
+                    break;
+                case "drug3":
+                    feedback = "🧪 AI Prediction: Drug C provides moderate binding with minimal side effects. A safe alternative.";
+                    break;
+                default:
+                    feedback = "❌ Please select a drug before running AI analysis.";
+            }
+
+            document.getElementById("ai-feedback").innerHTML = feedback;
+        }
+    </script>
+</body>
+</html>
