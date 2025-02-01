@@ -22,6 +22,19 @@
         th {
             background-color: #f4f4f4;
         }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +46,7 @@
                 <th>Score</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="scoreboard-body">
             <tr>
                 <td>Team A</td>
                 <td>25</td>
@@ -48,5 +61,29 @@
             </tr>
         </tbody>
     </table>
+    <button onclick="updateScores()">Update Scores</button>
+
+    <script>
+        const scores = {
+            "Team A": 25,
+            "Team B": 20,
+            "Team C": 15
+        };
+
+        function updateScores() {
+            // Simulate score updates (replace this with real logic)
+            scores["Team A"] += Math.floor(Math.random() * 5);
+            scores["Team B"] += Math.floor(Math.random() * 5);
+            scores["Team C"] += Math.floor(Math.random() * 5);
+
+            const tbody = document.getElementById("scoreboard-body");
+            tbody.innerHTML = ""; // Clear existing rows
+
+            for (const [team, score] of Object.entries(scores)) {
+                const row = `<tr><td>${team}</td><td>${score}</td></tr>`;
+                tbody.innerHTML += row;
+            }
+        }
+    </script>
 </body>
 </html>
