@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Disease Detection Challenge</title>
+    <title>AI Precision Medicine Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
             margin: 50px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
         }
         .btn {
@@ -24,7 +24,7 @@
             font-size: 18px;
             border-radius: 5px;
         }
-        input {
+        input, select {
             padding: 10px;
             font-size: 16px;
             margin: 10px;
@@ -46,22 +46,37 @@
 </head>
 <body>
     <div class="container">
-        <h1>AI Disease Detection Challenge</h1>
-        <p>Welcome to the AI-powered disease detection challenge! Your goal is to identify the disease associated with a given genetic sequence.</p>
+        <h1>AI Precision Medicine Challenge</h1>
+        <p>Use AI-driven insights to recommend a personalized treatment plan based on a patient's genetic mutation.</p>
 
-        <h2>🧬 DNA to Disease Challenge</h2>
-        <p>Select a mystery virus to analyze:</p>
-        <select id="virus-select" onchange="changeVirus()">
-            <option value="virus1">Mystery Virus 1</option>
-            <option value="virus2">Mystery Virus 2</option>
-            <option value="virus3">Mystery Virus 3</option>
+        <h2>🧬 Personalized Treatment Challenge</h2>
+        <p>Select a genetic mutation to analyze:</p>
+        <select id="mutation-select" onchange="changeMutation()">
+            <option value="brca1">BRCA1 - Linked to Breast Cancer</option>
+            <option value="cftr">CFTR - Linked to Cystic Fibrosis</option>
+            <option value="httexp">HTT Expansion - Linked to Huntington's Disease</option>
         </select>
         
-        <p><strong>DNA Sequence:</strong> <span id="dna-sequence">ATGCGATTACGTTT</span></p>
+        <p id="mutation-description">A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.</p>
 
-        <h3>🔍 Check Sequence with AI</h3>
-        <p>Use AI to analyze your sequence by clicking the button below:</p>
-        <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank" class="btn">Check DNA with BLAST</a>
+        <h3>Step 1: Select a Treatment Plan</h3>
+        <select id="treatment-select">
+            <option value="">-- Select a Treatment --</option>
+            <option value="plan1">PARP Inhibitor Therapy</option>
+            <option value="plan2">Chemotherapy</option>
+            <option value="plan3">Hormone Therapy</option>
+        </select>
+        <button onclick="analyzeTreatment()">Analyze</button>
+        <p id="treatment-feedback"></p>
+
+        <h3>Step 2: AI-Powered Prediction</h3>
+        <p>Use AI to simulate how the treatment interacts with the patient's genetic profile.</p>
+        <button onclick="aiPrediction()">Run AI Treatment Simulation</button>
+        <p id="ai-feedback"></p>
+
+        <h3>🔍 AI-Powered Genetic Analysis</h3>
+        <p>Use AI tools to verify the best treatment plan:</p>
+        <a href="https://www.ncbi.nlm.nih.gov/gene/" target="_blank" class="btn">Analyze Genes on NCBI</a>
 
         <h2>🏆 Live Scoreboard</h2>
         <iframe src="https://MrAkanni.github.io/BioAI/live_scoreboard.html" 
@@ -69,15 +84,57 @@
     </div>
 
     <script>
-        const virusData = {
-            virus1: "ATGCGATTACGTTT",
-            virus2: "CGTATCGATCGTACG",
-            virus3: "TTAGCCGATCGTAGC"
+        const mutationData = {
+            brca1: "A patient has tested positive for a genetic mutation in the **BRCA1** gene. Your task is to analyze the mutation and select the most effective treatment plan.",
+            cftr: "A patient has a mutation in the **CFTR** gene, linked to Cystic Fibrosis. Identify the best treatment option.",
+            httexp: "A patient has an HTT gene expansion, indicating **Huntington's Disease**. Choose an optimal treatment strategy."
         };
 
-        function changeVirus() {
-            const selectedVirus = document.getElementById("virus-select").value;
-            document.getElementById("dna-sequence").textContent = virusData[selectedVirus];
+        function changeMutation() {
+            const selectedMutation = document.getElementById("mutation-select").value;
+            document.getElementById("mutation-description").innerHTML = mutationData[selectedMutation];
+        }
+
+        function analyzeTreatment() {
+            const treatment = document.getElementById("treatment-select").value;
+            let feedback = "";
+
+            switch (treatment) {
+                case "plan1":
+                    feedback = "✅ PARP Inhibitor Therapy is highly effective for BRCA1 mutations.";
+                    break;
+                case "plan2":
+                    feedback = "⚠️ Chemotherapy is a common approach but may not be the most targeted option.";
+                    break;
+                case "plan3":
+                    feedback = "✅ Hormone Therapy can be effective but depends on specific patient hormone markers.";
+                    break;
+                default:
+                    feedback = "❌ Please select a treatment plan to analyze.";
+            }
+
+            document.getElementById("treatment-feedback").innerHTML = feedback;
+        }
+
+        function aiPrediction() {
+            const treatment = document.getElementById("treatment-select").value;
+            let feedback = "";
+
+            switch (treatment) {
+                case "plan1":
+                    feedback = "🧪 AI Prediction: PARP Inhibitors show high success rates for BRCA1 mutations!";
+                    break;
+                case "plan2":
+                    feedback = "🧪 AI Prediction: Chemotherapy may work, but targeted treatments are recommended.";
+                    break;
+                case "plan3":
+                    feedback = "🧪 AI Prediction: Hormone Therapy depends on specific patient hormone markers.";
+                    break;
+                default:
+                    feedback = "❌ Please select a treatment before running AI analysis.";
+            }
+
+            document.getElementById("ai-feedback").innerHTML = feedback;
         }
     </script>
 </body>
