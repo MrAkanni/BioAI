@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BIOLAB AR — Marker Viewer</title>
+<title>BIOLAB AR — Viewer</title>
 <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -51,11 +50,21 @@
   }
   .spinner{width:34px; height:34px; border:2px solid var(--line); border-top-color:var(--teal); border-radius:50%; animation:spin 0.9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  #cam{position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; background:#000;}
+  a-scene.markerless{position:fixed !important; inset:0; z-index:1;}
+  a-scene.markerless canvas{background:transparent !important;}
+  .start-btn{pointer-events:auto; font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.08em; text-transform:uppercase; background:var(--teal); color:#04100c; border:none; border-radius:999px; padding:14px 30px; cursor:pointer; font-weight:600;}
+  .loading-note{max-width:300px; text-align:center; line-height:1.6; text-transform:none; letter-spacing:0; font-size:12px;}
+  .tools{display:flex; gap:8px; margin-top:10px; justify-content:center; flex-wrap:wrap;}
+  .tools button, .tools a{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; background:var(--panel); color:var(--amber); border:1px solid var(--amber); border-radius:999px; padding:8px 14px; cursor:pointer; text-decoration:none; backdrop-filter:blur(8px);}
 </style>
 </head>
 <body>
 
-<div id="loading"><div class="spinner"></div><span>Starting camera…</span></div>
+<div id="loading"><div class="spinner" id="spin"></div><span id="loadMsg">Loading 3D engine…</span>
+  <div class="loading-note" id="loadNote"></div>
+  <button class="start-btn" id="startBtn" style="display:none">Start AR</button>
+</div>
 
 <div id="errorOverlay">
   <div class="box">
@@ -75,22 +84,12 @@
   </div>
 </div>
 
-<div class="hud hud-bottom">
-  <div class="hint" id="hint">Point your camera at the printed <b>Hiro marker</b> — the model will appear on top of it. Get the marker from the AR Assets section on the BIOLAB page.</div>
+<div class="hud hud-bottom" style="flex-direction:column; align-items:center;">
+  <div class="hint" id="hint">&nbsp;</div>
+  <div class="tools" id="tools"></div>
 </div>
 
-<a-scene
-  embedded
-  vr-mode-ui="enabled: false"
-  renderer="logarithmicDepthBuffer: true; precision: medium;"
-  arjs="sourceType: webcam; detectionMode: mono; debugUIEnabled: false;">
-
-  <a-marker preset="hiro" id="marker" smooth="true" smoothCount="8" smoothTolerance="0.01" smoothThreshold="4">
-    <a-entity id="modelRoot"></a-entity>
-  </a-marker>
-
-  <a-entity camera></a-entity>
-</a-scene>
+<!-- scene is created by the script below (markerless by default) -->
 
 <script>
 /* ---------- lab registry ---------- */
@@ -284,45 +283,136 @@ const BUILDERS = {
 /* ---------- boot ---------- */
 const params = new URLSearchParams(window.location.search);
 const labId = (params.get('lab') || 'dna').toLowerCase();
+const markerMode = (params.get('mode') || '').toLowerCase() === 'marker';
 const builder = BUILDERS[labId] || BUILDERS.dna;
 document.getElementById('labName').textContent = LAB_TITLES[labId] || LAB_TITLES.dna;
+document.querySelector('a.back').href = 'lab.html?lab=' + encodeURIComponent(labId);
 
-const scene = document.querySelector('a-scene');
-function buildModel(){
-  root = document.getElementById('modelRoot');
-  builder();
-}
-if(scene.hasLoaded) buildModel(); else scene.addEventListener('loaded', buildModel);
-
-/* marker found/lost indicator */
-const marker = document.getElementById('marker');
-const dot = document.getElementById('statusDot');
-const hint = document.getElementById('hint');
-marker.addEventListener('markerFound', () => {
-  dot.classList.add('found');
-  hint.innerHTML = '<b>Marker locked.</b> Move slowly - keep the marker flat and fully in view.';
-});
-marker.addEventListener('markerLost', () => {
-  dot.classList.remove('found');
-  hint.innerHTML = 'Marker lost - point the camera back at the printed <b>Hiro marker</b>.';
-});
-
-/* loading + error handling */
 const loading = document.getElementById('loading');
-let cameraOK = false;
+const loadMsg = document.getElementById('loadMsg');
+const loadNote = document.getElementById('loadNote');
+const startBtn = document.getElementById('startBtn');
+const hint = document.getElementById('hint');
+const dot = document.getElementById('statusDot');
+const tools = document.getElementById('tools');
 function hideLoading(){ loading.style.opacity = '0'; setTimeout(() => loading.style.display = 'none', 500); }
-// AR.js inserts a <video> element once the stream starts
-const camPoll = setInterval(() => {
-  const v = document.querySelector('video');
-  if(v && v.readyState >= 2){ cameraOK = true; hideLoading(); clearInterval(camPoll); }
-}, 400);
-setTimeout(() => {
-  if(!cameraOK){
-    clearInterval(camPoll);
-    loading.style.display = 'none';
-    document.getElementById('errorOverlay').style.display = 'flex';
+function showError(){ loading.style.display = 'none'; document.getElementById('errorOverlay').style.display = 'flex'; }
+function addTool(text, fn, href){
+  const e = document.createElement(href ? 'a' : 'button'); e.textContent = text;
+  if(href) e.href = href; else e.addEventListener('click', fn);
+  tools.appendChild(e); return e;
+}
+function waitFor(cond, ms){ return new Promise(res => { const t0 = Date.now(); (function p(){ if(cond()) return res(true); if(Date.now()-t0 > ms) return res(false); setTimeout(p, 150); })(); }); }
+
+/* ===== MARKERLESS (default): camera feed + phone motion sensors, no printed marker ===== */
+async function startMarkerless(){
+  // 1. motion permission (iOS needs this inside the tap)
+  try{
+    if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+      await DeviceOrientationEvent.requestPermission();
+    }
+  }catch(e){}
+  // 2. camera
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}, audio:false});
+  }catch(e){ return showError(); }
+  const video = document.createElement('video');
+  video.id = 'cam'; video.setAttribute('playsinline',''); video.muted = true; video.autoplay = true; video.srcObject = stream;
+  document.body.insertBefore(video, document.body.firstChild);
+  try{ await video.play(); }catch(e){}
+  // 3. scene
+  document.body.insertAdjacentHTML('beforeend', `
+    <a-scene class="markerless" embedded vr-mode-ui="enabled: false" renderer="alpha: true; antialias: true"
+             device-orientation-permission-ui="enabled: false" background="color: #000">
+      <a-entity light="type: ambient; intensity: 0.9"></a-entity>
+      <a-entity light="type: directional; intensity: 0.8" position="1 3 2"></a-entity>
+      <a-entity id="rig" position="0 1.6 0">
+        <a-entity id="cam3d" camera look-controls="magicWindowTrackingEnabled: true; touchEnabled: false; mouseEnabled: ${/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'false' : 'true'}; pointerLockEnabled: false"></a-entity>
+      </a-entity>
+      <a-entity id="pivot" position="0 0.8 -3"><a-entity id="modelRoot"></a-entity></a-entity>
+    </a-scene>`);
+  const scene = document.querySelector('a-scene');
+  const ready = () => { root = document.getElementById('modelRoot'); builder(); };
+  if(scene.hasLoaded) ready(); else scene.addEventListener('loaded', ready);
+  await waitFor(() => scene.hasLoaded, 8000);
+  scene.renderer && scene.renderer.setClearColor(0x000000, 0);
+  scene.object3D.background = null;
+
+  dot.classList.add('found');
+  hint.innerHTML = '<b>Look around</b> \u2014 the model floats in front of you. <b>Drag</b> to spin it, <b>pinch</b> to resize, then walk closer or step back.';
+  hideLoading();
+
+  /* touch: one finger rotates, two fingers resize */
+  const pivot = document.getElementById('pivot');
+  let rotY = 0, scale = 1, last = null, pd = null;
+  const apply = () => { root.setAttribute('rotation', `0 ${rotY} 0`); root.setAttribute('scale', `${scale} ${scale} ${scale}`); };
+  const dist = e => Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+  const surface = document.body;
+  surface.addEventListener('touchstart', e => {
+    if(e.target.closest('.tools,.topbar')) return;
+    if(e.touches.length === 1) last = e.touches[0].clientX;
+    if(e.touches.length === 2) pd = dist(e);
+  }, {passive:true});
+  surface.addEventListener('touchmove', e => {
+    if(e.target.closest('.tools,.topbar')) return;
+    if(e.touches.length === 1 && last !== null){ rotY += (e.touches[0].clientX - last)*0.6; last = e.touches[0].clientX; apply(); }
+    if(e.touches.length === 2 && pd){ const d = dist(e); scale = Math.max(0.3, Math.min(3, scale*d/pd)); pd = d; apply(); }
+  }, {passive:true});
+  surface.addEventListener('touchend', () => { last = null; pd = null; });
+
+  /* place the model where the phone is pointing now */
+  function place(){
+    const cam = document.getElementById('cam3d').object3D;
+    const dir = new THREE.Vector3(0,0,-1).applyQuaternion(cam.getWorldQuaternion(new THREE.Quaternion()));
+    dir.y = 0; if(dir.lengthSq() < 1e-4) dir.set(0,0,-1); dir.normalize();
+    pivot.setAttribute('position', `${dir.x*3} 0.8 ${dir.z*3}`);
+    scale = 1; apply();
   }
-}, 12000);
+  addTool('Place here', place);
+  addTool('Reset size', () => { scale = 1; rotY = 0; apply(); });
+  addTool('Use marker', null, 'ar.html?lab=' + encodeURIComponent(labId) + '&mode=marker');
+}
+
+/* ===== MARKER MODE (optional, ?mode=marker): Hiro marker via AR.js ===== */
+async function startMarker(){
+  await new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js'; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); }).catch(() => {});
+  document.body.insertAdjacentHTML('beforeend', `
+    <a-scene embedded vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true; precision: medium;"
+             arjs="sourceType: webcam; detectionMode: mono; debugUIEnabled: false;">
+      <a-marker preset="hiro" id="marker" smooth="true" smoothCount="8" smoothTolerance="0.01" smoothThreshold="4">
+        <a-entity id="modelRoot"></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>`);
+  const scene = document.querySelector('a-scene');
+  const ready = () => { root = document.getElementById('modelRoot'); builder(); };
+  if(scene.hasLoaded) ready(); else scene.addEventListener('loaded', ready);
+  hint.innerHTML = 'Point your camera at the printed <b>Hiro marker</b>. Get it from the AR Marker section on the BIOLAB page.';
+  const marker = document.getElementById('marker');
+  marker.addEventListener('markerFound', () => { dot.classList.add('found'); hint.innerHTML = '<b>Marker locked.</b> Move slowly \u2014 keep the marker flat and fully in view.'; });
+  marker.addEventListener('markerLost', () => { dot.classList.remove('found'); hint.innerHTML = 'Marker lost \u2014 point the camera back at the <b>Hiro marker</b>.'; });
+  addTool('No marker needed', null, 'ar.html?lab=' + encodeURIComponent(labId));
+  let ok = false;
+  const poll = setInterval(() => { const v = document.querySelector('video'); if(v && v.readyState >= 2){ ok = true; hideLoading(); clearInterval(poll); } }, 400);
+  setTimeout(() => { if(!ok){ clearInterval(poll); showError(); } }, 12000);
+}
+
+/* ===== start ===== */
+(async function(){
+  const ok = await waitFor(() => window.AFRAME && window.THREE, 10000);
+  if(!ok){ loadMsg.textContent = 'Could not load the 3D engine'; loadNote.textContent = 'Check your internet connection and reload.'; document.getElementById('spin').style.display = 'none'; return; }
+  if(markerMode){ loadMsg.textContent = 'Starting camera\u2026'; startMarker(); return; }
+  document.getElementById('spin').style.display = 'none';
+  loadMsg.textContent = 'Markerless AR';
+  loadNote.textContent = 'No printed marker needed. Allow the camera and motion sensors, then look around to find the model.';
+  startBtn.style.display = 'inline-block';
+  startBtn.addEventListener('click', () => {
+    startBtn.style.display = 'none'; document.getElementById('spin').style.display = 'block';
+    loadMsg.textContent = 'Starting camera\u2026'; loadNote.textContent = '';
+    startMarkerless();
+  });
+})();
 </script>
 </body>
 </html>
